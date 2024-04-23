@@ -44,14 +44,14 @@ if percentage_diff >= 5:
     # STEP 3: Use twilio.com/docs/sms/quickstart/python ## 2ZU167TREYC7VERJ1761C5DZ
     #to send a separate message with each article's title and description to your phone number.
 
-    #TODO 8. - Create a new list of the first 3 article's headline and description using list comprehension.
+    # - Create a new list of the first 3 article's headline and description using list comprehension.
     articles_headlines = [value['title'] for value in articles]
     content = [value['content'] for value in articles]
 
 
-    #TODO 9. - Send each article as a separate message via Twilio.
+    # - Send each article as a separate message via Twilio.
 
-    #Optional TODO: Format the message like this:
+    #Optional  Format the message:
     for i in range(len(content)):
         if yesterday_closing_price > d_yesterday_closing_price:
 
