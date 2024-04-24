@@ -1,4 +1,5 @@
 import requests
+from twilio.rest import Client
 
 STOCK_NAME = "TSLA"
 COMPANY_NAME = "Tesla Inc"
@@ -11,7 +12,7 @@ NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 
 
 # # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=UFT185NW0HP8DU5T'
+url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=yourapi'
 r = requests.get(url)
 data = r.json()
 
@@ -35,7 +36,7 @@ if percentage_diff >= 5:
     # https://newsapi.org/
     # get the first 3 news pieces for the Tesla Inc.
     url = ("https://newsapi.org/v2/everything?q=tesla&from=2024-03-23&sortBy=publishedAt&apiKey"
-           "=80edc6608913459e81487aae1055c0b7")
+           "=yourapi")
     r = requests.get(url)
     news = r.json()
 
@@ -44,26 +45,33 @@ if percentage_diff >= 5:
     # STEP 3: Use twilio.com/docs/sms/quickstart/python ## 2ZU167TREYC7VERJ1761C5DZ
     #to send a separate message with each article's title and description to your phone number.
 
-    # - Create a new list of the first 3 article's headline and description using list comprehension.
+    # - Create a new list of the first 3 article headline and description using list comprehension.
     articles_headlines = [value['title'] for value in articles]
     content = [value['content'] for value in articles]
 
-
     # - Send each article as a separate message via Twilio.
 
-    #Optional  Format the message:
+    account_sid = '**************************'
+    auth_token = '[AuthToken]'
+    client = Client(account_sid, auth_token)
+
+    # Format the message:
     for i in range(len(content)):
         if yesterday_closing_price > d_yesterday_closing_price:
-
-            print(
-                f"TSLA: 🔺{int(percentage_diff)}% \n"
-                f"Headline: {articles_headlines[i]} \n"
-                f"Brief: {content[i]}."
+            message = client.messages.create(
+                from_='whatsapp:+********',
+                body=f"TSLA: 🔺{int(percentage_diff)}% \n"
+                     f"Headline: {articles_headlines[i]} \n"
+                     f"Brief: {content[i]}.",
+                to='whatsapp:+*********'
             )
+
         else:
-
-            print(
-                f"TSLA: 🔻{int(percentage_diff)}% \n"
-                f"Headline: {articles_headlines[i]} \n"
-                f"Brief: {content[i]}"
+            message = client.messages.create(
+                from_='whatsapp:+*********',
+                body=f"TSLA: 🔻{int(percentage_diff)}% \n"
+                     f"Headline: {articles_headlines[i]} \n"
+                     f"Brief: {content[i]}",
+                to='whatsapp:+********'
             )
+        print(message.sid)
